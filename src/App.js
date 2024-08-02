@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import AppRouter from "./router";
+import StoreContext from "./store";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+  const [currencies, setCurrencies] = useState({});
+  const [loading, setLoading] = useState(true)
+
+	const loadCurrencies = async () => {
+		try {
+			const resp = await fetch(
+				"https://api.frankfurter.app/latest?from=TRY"
+			);
+      if(!resp.ok){
+        throw new Error(resp.message);
+      }
+			const data = await resp.json();
+      setCurrencies(data.rates);
+
+		} catch (err) {
+			console.log(err);
+		}
+    finally{
+      setLoading(false);
+    }
+	};
+
+  useEffect( ()=>{
+    loadCurrencies();
+  }, [])
+
+	
+  if(loading) return null;
+
+	return (
+		<StoreContext.Provider value={{ currencies }}>
+			<AppRouter />
+		</StoreContext.Provider>
+	);
+};
 
 export default App;
+

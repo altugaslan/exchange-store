@@ -1,0 +1,10 @@
+[
+	{ "title": "Home", "link": "/" },
+	{ "title": "Want to be a Our Customer?", "link": "/create-user" },
+	{ "title": "Need Token?", "link": "/acquire-session-token" },
+	{ "title": "Initialize you!", "link": "/initialize-user" },
+	{ "title": "Your Wallet", "link": "/user-controlled-wallet" },
+	{ "title": "UseParams", "link": "/useparams/99" },
+	{ "title": "UseNavigate", "link": "/usenavigate" },
+	{ "title": "Exchange Your Money", "link": "/exchange" }
+]

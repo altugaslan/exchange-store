@@ -1,0 +1,36 @@
+/* styles.css */
+
+.button-container {
+    text-align: center;
+}
+
+.custom-button {
+    background-color: white;
+    cursor: pointer;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid #ddd; /* Butonun kenarlığını tanımlayabilirsiniz */
+}
+
+.custom-button:hover {
+    background-color: rgb(65, 65, 65);
+    color: white; /* Hover durumunda metin rengi */
+}
+
+.form-container {
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid #ddd; /* Form container'ın kenarlığını tanımlayabilirsiniz */
+    border-radius: 4px; /* Köşeleri yuvarlatmak için */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif bir gölge eklemek için */
+    max-width: 400px; /* Formun genişliğini sınırlamak için */
+    margin: 0 auto; /* Merkezi hizalamak için */
+}
+
+.custom-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem; /* Girişler arasındaki boşluk */
+    border: 1px solid #ddd; /* Girişlerin kenarlığını tanımlayabilirsiniz */
+    border-radius: 4px; /* Köşeleri yuvarlatmak için */
+}

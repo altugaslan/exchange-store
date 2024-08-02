@@ -1,0 +1,225 @@
+******************************************************
+Combainig codes
+--------------------------
+export default UserControlledWallet; 
+import React, { useState, useCallback, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import { W3SSdk } from "@circle-fin/w3s-pw-web-sdk";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../wallet/style.css';
+
+import createUser from "../../apiCircle/createUser";
+import acquireSessionToken from "../../apiCircle/acquireSessionToken";
+import initializeUser from "../../apiCircle/initializeUser";
+
+const UserControlledWallet = () => {
+    const [showForm, setShowForm] = useState(false);
+    const [walletId, setWalletId] = useState('');
+    const [walletAddress, setWalletAddress] = useState('');
+    const [sdk, setSdk] = useState(null);
+
+    useEffect(() => {
+        setSdk(new W3SSdk());
+    }, []);
+
+    const handleWallet = async () => {
+        try {
+            if (!sdk) return;
+
+            const userResult = await createUser();
+            if (!userResult) throw new Error("User creation failed");
+
+            const sessionResult = await acquireSessionToken();
+            if (!sessionResult) throw new Error("Failed to acquire session token");
+            const challengeId = await initializeUser();
+            if (!challengeId) throw new Error("Failed to initialize user");
+
+            sdk.setAppSettings({ appId: 'your-app-id' });
+            sdk.setAuthentication({ userToken: sessionResult.userToken, encryptionKey: sessionResult.encryptionKey });
+
+            sdk.execute(challengeId, (error, result) => {
+                if (error) {
+                  console.error(`Error: ${error?.code?.toString() || 'Unknown code'} - ${error?.message ?? 'error!'}`);
+                    return;
+                }
+
+                setWalletId(result.data?.walletId || 'No wallet ID');
+                setWalletAddress(result.data?.address || 'No address');
+                alert('Wallet created successfully!');
+                setShowForm(false);
+            });
+        } catch (error) {
+            console.error('Error in handleWallet:', error);
+        }
+    };
+
+    return (
+        <div className="button-container">
+            {!showForm ? (
+                <Button className="custom-button" onClick={() => setShowForm(true)}>
+                    Create Wallet
+                </Button>
+            ) : (
+                <div className="form-container">
+                    <Button className="custom-button" onClick={handleWallet}>
+                        Verify
+                    </Button>
+                    <Button className="custom-button" onClick={() => setShowForm(false)}>
+                        Cancel
+                    </Button>
+                    {walletId && <p>Wallet ID: {walletId}</p>}
+                    {walletAddress && <p>Wallet Address: {walletAddress}</p>}
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default UserControlledWallet;
+***************************************************************************
+---------------------------------------------------------------------------
+
+First workouts.
+
+
+import React, { useState, useCallback, useEffect } from "react";
+import { Button } from 'react-bootstrap';
+//import createUser from "../../apiCircle/createUser";
+//import { acquireSessionToken } from "../../apiCircle/acquireSessionToken";
+//import { initializeUser } from "../../apiCircle/initializeUser";
+import { W3SSdk } from "@circle-fin/w3s-pw-web-sdk";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../wallet/style.css';
+
+
+
+const UserControlledWallet = () => {
+nst [isCreating, setIsCreating] = useState(false);
+
+const handleCreateWallet = async () => {
+    setIsCreating(true);
+    try {
+        const result = await createUser();
+        if (result) {
+            console.log('User created successfully. User ID: ', result.userId);
+                // Diğer işlemler (örn. kullanıcıyı yönlendirme, bildirim gösterme)
+            } else {
+                console.error('Failed to create user');
+            }
+        } catch (error) {
+            console.error('Error in creation process', error);
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    //const handleCreateWallet = async () => {
+    //    setIsCreating(true);
+    //    try {
+    //        const sessionResult = await acquireSessionToken();
+    //        if (!sessionResult) {
+    //            throw new Error("Failed to Acquire Session Token");
+    //           } 
+    //            console.log('Session Token acquired successfully');
+    //            console.log('User token: ', sessionResult.    userToken);
+    //            console.log('Encription Key: ', sessionResult.encryptionKey);
+    //        
+    //    } catch (error) {
+    //        console.error('Error in creation process', error);
+    //    } finally {
+    //        setIsCreating(false);
+    //    }
+    //};
+
+
+    //const handleCreateWallet = async () => {
+    // setIsCreating(true);
+    //    try {
+    //          const challengeId = await initializeUser();
+    //          if (!challengeId) {
+    //              throw new Error("Failed to initialize User");
+    //             } 
+    //              console.log('User initialized successfully');
+    //              console.log('Challenge Id: ', challengeId);
+    //              ;
+    //          
+    //      } catch (error) {
+    //          console.error('Error in creation process', error);
+    //      } finally {
+    //          setIsCreating(false);
+    //      }
+    //    };
+
+    ****************************************************************************
+    ****************************************************************************
+    ----------------------------------------------------------------------------
+     Wallet Operations!!!!
+
+     import React, { useState, useCallback, useEffect } from "react";
+import { Button } from 'react-bootstrap';
+
+import { W3SSdk } from "@circle-fin/w3s-pw-web-sdk";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../wallet/style.css';
+
+
+    const [showForm, setShowForm] = useState(false);
+    const [appId, setAppId] = useState('');
+    const [userToken, setUserToken] = useState('');
+    const [encryptionKey, setEncryptionKey] = useState('');
+    const [challengeId, setChallengeId] = useState('');
+    const [sdk, setSdk] = useState(null);
+
+    useEffect(() => {
+        setSdk(new W3SSdk());
+    }, []);
+
+    const onAppIdChange = useCallback((e) => setAppId(e.target.value), []);
+    const onUserTokenChange = useCallback((e) => setUserToken(e.target.value), []);
+    const onEncriptionKeyChange = useCallback((e) => setEncryptionKey(e.target.value), []);
+    const onChallengeChange = useCallback((e) => setChallengeId(e.target.value), []);
+
+    const handleCreateWallet = useCallback(() => {
+        if (sdk) {
+            sdk.setAppSettings({ appId });
+            sdk.setAuthentication({ userToken, encryptionKey });
+
+            sdk.execute(challengeId, (error, result) => {
+                if (error) {
+                    console.log(`${error?.code?.toString() || 'Unknown code'}: ${error?.message ?? 'error!'}`);
+                    return;
+                }
+
+                console.log(`Challenge: ${result.type}`);
+             console.log(`status: ${result.status}`);
+
+                if (result.data) {
+                    console.log(`signature: ${result.data?.signature}`);
+                }
+            });
+        }
+        setShowForm(false);
+    }, [sdk, appId, userToken, encryptionKey, challengeId]);
+
+    
+    return (
+        <div className="button-container">
+            {!showForm ? (
+                <Button className="custom-button" onClick={() => setShowForm(true)}>Create Wallet</Button>
+            ) : (
+                <div className="form-container">
+                    <input className="custom-input" type="text" placeholder="App Id" value={appId} onChange={onAppIdChange} />
+                    <input className="custom-input" type="text" placeholder="User Token" value={userToken} onChange={onUserTokenChange} />
+                    <input className="custom-input" type="text" placeholder="Encryption Key" value={encryptionKey} onChange={onEncriptionKeyChange} />
+                    <input className="custom-input" type="text" placeholder="Challenge Id" value={challengeId} onChange={onChallengeChange} />
+                    <Button className="custom-button" onClick={handleCreateWallet}>Verify Challenge</Button>
+                    <Button className="custom-button" onClick={() => setShowForm(false)}>Cancel</Button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+************************************************************
+************************************************************
+************************************************************
